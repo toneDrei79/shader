@@ -85,18 +85,13 @@ function videoOnLoadedData() {
 
         let shaderMaterial = new THREE.ShaderMaterial({
             uniforms: {
-                sizeDiv2: { type: "i", value: 10 },
-                colorScaleR: { type: "f", value: 1.0 },
-                colorScaleG: { type: "f", value: 1.0 },
-                colorScaleB: { type: "f", value: 1.0 },
-                invert: { type: "b", value: false },
-                // image: { type: "t", value: videoTexture },
-                image: { type: "t", value: null }, // will be set after video loading
-                resolution: {
-                    type: "2f",
-                    // value: new THREE.Vector2(video.videoWidth, video.videoHeight),
-                    value: null // will be set after video loading
-                },
+                image: { type: "t", value: videoTexture },
+                // image: { type: "t", value: null }, // will be set after video loading
+                // resolution: {
+                //     type: "2f",
+                //     // value: new THREE.Vector2(video.videoWidth, video.videoHeight),
+                //     value: null // will be set after video loading
+                // },
                 type: {type: 'i', value: 0}
             },
             vertexShader: vertShader,
@@ -105,8 +100,8 @@ function videoOnLoadedData() {
         const plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), shaderMaterial)
         scene.add(plane)
     
-        shaderMaterial.uniforms.image.value = videoTexture
-        shaderMaterial.uniforms.resolution.value = new THREE.Vector2(video.videoWidth, video.videoHeight)
+        // shaderMaterial.uniforms.image.value = videoTexture
+        // shaderMaterial.uniforms.resolution.value = new THREE.Vector2(video.videoWidth, video.videoHeight)
 
         video.play()
 
