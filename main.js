@@ -2,17 +2,18 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import GUI from 'three/addons/libs/lil-gui.module.min.js'
 import Stats from 'three/addons/libs/stats.module.js'
-import ShaderLoader from './shaderloader.js'
+import Anaglyph from './anaglyph.js'
+import ImageProcessing from './imageprocessing.js'
 
-let shaderLoader = new ShaderLoader()
-let vertShader = shaderLoader.load('./shaders/basic.vert.glsl')
-let fragShader = shaderLoader.load('./shaders/anaglyph.frag.glsl')
-// let fragShader = shaderLoader.load('./shaders/right.frag.glsl')
 
 let camera, scene, renderer
+let imageprocessing, anaglyph
 let video, videoTexture
 let stats
-let gui
+let availables = {
+    sanfrancisco: './videos/sanfrancisco.mp4',
+    moon: './videos/moon.mp4'
+}
 
 init()
 animate()
@@ -37,8 +38,8 @@ async function init() {
     camera.position.z = .5
 
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.maxDistance = 1
-    controls.minDistance = .1
+    controls.maxZoom = 10.
+    controls.minZoom = 0.1
     controls.enableRotate = false
     controls.enablePan = true
     controls.update()
@@ -49,17 +50,25 @@ async function init() {
     window.addEventListener('resize', onWindowResize, false)
 
 
-    gui = new GUI({title: 'Settings'})
-    gui.close()
+    imageprocessing = new ImageProcessing()
+    anaglyph = new Anaglyph()
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), anaglyph.material)
+    scene.add(plane)
 
-    
+
+    const select = {src: availables.sanfrancisco}
     video = document.createElement('video')
-    // video.src = "./videos/moon.mp4"
-    video.src = "./videos/sanfrancisco.mp4"
+    video.src = select.src
     video.load()
     video.muted = true
     video.loop = true
     video.onloadeddata = videoOnLoadedData()
+
+
+    let gui = new GUI({title: 'Settings'})
+    gui.add(select, 'src', availables).name('video').onChange(value => {video.src = value})
+    gui.add(anaglyph, 'mode', Anaglyph.modes).name('mode')
+    gui.close()
 }
 
 function render() {
@@ -68,8 +77,9 @@ function render() {
 
 function animate() {
     requestAnimationFrame(animate)
-
     stats.update()
+
+    imageprocessing.process(renderer)
 
     render()
 }
@@ -82,35 +92,10 @@ function videoOnLoadedData() {
         videoTexture.generateMipmaps = false
         videoTexture.format = THREE.RGBAFormat
 
-
-        let shaderMaterial = new THREE.ShaderMaterial({
-            uniforms: {
-                image: { type: "t", value: videoTexture },
-                // image: { type: "t", value: null }, // will be set after video loading
-                // resolution: {
-                //     type: "2f",
-                //     // value: new THREE.Vector2(video.videoWidth, video.videoHeight),
-                //     value: null // will be set after video loading
-                // },
-                type: {type: 'i', value: 0}
-            },
-            vertexShader: vertShader,
-            fragmentShader: fragShader,
-        })
-        const plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), shaderMaterial)
-        scene.add(plane)
-    
-        // shaderMaterial.uniforms.image.value = videoTexture
-        // shaderMaterial.uniforms.resolution.value = new THREE.Vector2(video.videoWidth, video.videoHeight)
-
+        imageprocessing.setResolution(video.videoWidth, video.videoHeight)
+        imageprocessing.setTexture(videoTexture)
+        anaglyph.setTexture(imageprocessing.texture)
         video.play()
-
-        const conf = {
-            type: 0
-        }
-        gui.add(conf, 'type', [0, 1, 2, 3, 4]).name('type').onChange(value => {
-            shaderMaterial.uniforms.type.value = value
-        })
     }
 }
 
@@ -119,15 +104,11 @@ function onWindowResize() {
     const height = window.innerHeight
     const aspect = width / height
     
-    // camera.aspect = aspect
     camera.left = -aspect/2
     camera.right = aspect/2
     camera.top = 1/2
     camera.bottom = -1/2
     camera.updateProjectionMatrix()
-
-    orbitCamera.aspect = aspect
-    orbitCamera.updateProjectionMatrix()
 
     renderer.setSize(width, height)
     render()
