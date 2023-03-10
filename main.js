@@ -39,7 +39,7 @@ async function init() {
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.maxZoom = 10.
-    controls.minZoom = 0.1
+    controls.minZoom = 1.
     controls.enableRotate = false
     controls.enablePan = true
     controls.update()
@@ -67,6 +67,8 @@ async function init() {
 
     let gui = new GUI({title: 'Settings'})
     gui.add(select, 'src', availables).name('video').onChange(value => {video.src = value})
+    gui.add(imageprocessing, 'kernel', 0, 10).step(1).name('kernel size')
+    gui.add(imageprocessing, 'sigma', 1, 3).step(1).name('sigma')
     gui.add(anaglyph, 'mode', Anaglyph.modes).name('mode')
     gui.close()
 }

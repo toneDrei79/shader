@@ -15,9 +15,14 @@ export default class ImageProcessing {
 
     #shaderLoader
 
+    #kernel
+    #sigma
+
     constructor() {
         this.#shaderLoader = new ShaderLoader()
         this.#mode = 0
+        this.#kernel = 3
+        this.#sigma = 1
         this.#initMaterial()
         this.#initOffscrean()
     }
@@ -54,7 +59,10 @@ export default class ImageProcessing {
         this.#material = new THREE.ShaderMaterial({
             uniforms: {
                 image: {value: null},
-                mode: {value: this.#mode}
+                resolution: {value: new THREE.Vector2(1280, 720)},
+                mode: {value: this.#mode},
+                kernel: {value: this.#kernel},
+                sigma: {value: this.#sigma}
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
             fragmentShader: this.#shaderLoader.load('./shaders/filter.frag.glsl'),
@@ -65,15 +73,28 @@ export default class ImageProcessing {
     #initOffscrean() {
         this.#offscreanScene = new THREE.Scene()
         this.#offscreanCamera = new THREE.OrthographicCamera(-.5, .5, .5, -.5, 0., 1.)
-        // this.#renderTarget = new THREE.WebGLRenderTarget(1280, 720, { // it will be re-defined
-        //     type: THREE.FloatType,
-        //     magFilter: THREE.NearestFilter,
-        //     minFilter: THREE.NearestFilter
-        // })
     }
 
     get texture() {
         return this.#renderTarget.texture
+    }
+
+    get kernel() {
+        return this.#kernel
+    }
+
+    get sigma() {
+        return this.#sigma
+    }
+
+    set kernel(value) {
+        this.#kernel = value
+        this.#material.uniforms.kernel.value = this.#kernel
+    }
+
+    set sigma(value) {
+        this.#sigma = value
+        this.#material.uniforms.sigma.value = this.#sigma
     }
 
 }
