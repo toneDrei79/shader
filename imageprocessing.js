@@ -3,26 +3,30 @@ import ShaderLoader from './shaderloader.js'
 
 
 export default class ImageProcessing {
+
+    #mode
+    #kernelsize
+    #sigma
     
     #material
     #plane
 
-    #mode
-
     #offscreanScene
     #offscreanCamera
-    #renderTarget
+    #renderTarget    
 
     #shaderLoader
 
-    #kernel
-    #sigma
+    static modes = {
+        gaussian: 0,
+        laplacian: 1,
+    }
 
     constructor() {
         this.#shaderLoader = new ShaderLoader()
-        this.#mode = 0
-        this.#kernel = 3
-        this.#sigma = 1
+        this.#mode = ImageProcessing.modes.gaussian
+        this.#kernelsize = 3
+        this.#sigma = 1.
         this.#initMaterial()
         this.#initOffscrean()
     }
@@ -37,6 +41,7 @@ export default class ImageProcessing {
             magFilter: THREE.NearestFilter,
             minFilter: THREE.NearestFilter
         })
+        this.#material.uniforms.resolution.value = new THREE.Vector2(width, height)
     }
 
     process(renderer) {
@@ -58,10 +63,10 @@ export default class ImageProcessing {
     #initMaterial() {
         this.#material = new THREE.ShaderMaterial({
             uniforms: {
-                image: {value: null},
-                resolution: {value: new THREE.Vector2(1280, 720)},
-                mode: {value: this.#mode},
-                kernel: {value: this.#kernel},
+                image: {value: null}, // will be set after loading video via setTexture()
+                resolution: {value: null}, // will be set after loading video via setResolution()
+                // mode: {value: this.#mode},
+                kernelsize: {value: this.#kernelsize},
                 sigma: {value: this.#sigma}
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
@@ -79,17 +84,17 @@ export default class ImageProcessing {
         return this.#renderTarget.texture
     }
 
-    get kernel() {
-        return this.#kernel
+    get kernelsize() {
+        return this.#kernelsize
     }
 
     get sigma() {
         return this.#sigma
     }
 
-    set kernel(value) {
-        this.#kernel = value
-        this.#material.uniforms.kernel.value = this.#kernel
+    set kernelsize(value) {
+        this.#kernelsize = value
+        this.#material.uniforms.kernelsize.value = this.#kernelsize
     }
 
     set sigma(value) {

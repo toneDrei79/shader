@@ -36,6 +36,7 @@ export default class Anaglyph {
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
             fragmentShader: this.#shaderLoader.load('./shaders/anaglyph.frag.glsl'),
+            // fragmentShader: this.#shaderLoader.load('./shaders/basic.frag.glsl'),
             glslVersion: THREE.GLSL3
         })
     }

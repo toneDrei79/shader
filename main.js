@@ -67,9 +67,8 @@ async function init() {
 
     let gui = new GUI({title: 'Settings'})
     gui.add(select, 'src', availables).name('video').onChange(value => {video.src = value})
-    gui.add(imageprocessing, 'kernel', 0, 10).step(1).name('kernel size')
-    gui.add(imageprocessing, 'sigma', 1, 3).step(1).name('sigma')
-    gui.add(anaglyph, 'mode', Anaglyph.modes).name('mode')
+    guiImageprocessing(gui)
+    guiAnaglyph(gui)
     gui.close()
 }
 
@@ -84,6 +83,19 @@ function animate() {
     imageprocessing.process(renderer)
 
     render()
+}
+
+function guiImageprocessing(gui) {
+    const folder = gui.addFolder('Pre-process')
+    folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
+    folder.add(imageprocessing, 'sigma', .1, 5.).step(.01).name('sigma')
+    folder.close()
+}
+
+function guiAnaglyph(gui) {
+    const folder = gui.addFolder('Anaglyph')
+    folder.add(anaglyph, 'mode', Anaglyph.modes).name('mode')
+    folder.close()
 }
 
 function videoOnLoadedData() {
