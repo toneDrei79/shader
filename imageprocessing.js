@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import ShaderLoader from './shaderloader.js'
 
 
@@ -13,22 +14,26 @@ export default class ImageProcessing {
 
     #offscreanScene
     #offscreanCamera
-    #renderTarget    
+    #renderTarget
+
+    #controls
 
     #shaderLoader
 
     static modes = {
         gaussian: 0,
         laplacian: 1,
+        sepalatablegaussian: 2
     }
 
-    constructor() {
+    constructor(renderer) {
         this.#shaderLoader = new ShaderLoader()
         this.#mode = ImageProcessing.modes.gaussian
         this.#kernelsize = 3
         this.#sigma = 1.
         this.#initMaterial()
         this.#initOffscrean()
+        this.#initOrbitControls(renderer)
     }
 
     setTexture(texture) { // should be called in video.onLoadedVideo
@@ -65,7 +70,7 @@ export default class ImageProcessing {
             uniforms: {
                 image: {value: null}, // will be set after loading video via setTexture()
                 resolution: {value: null}, // will be set after loading video via setResolution()
-                // mode: {value: this.#mode},
+                mode: {value: this.#mode},
                 kernelsize: {value: this.#kernelsize},
                 sigma: {value: this.#sigma}
             },
@@ -80,8 +85,21 @@ export default class ImageProcessing {
         this.#offscreanCamera = new THREE.OrthographicCamera(-.5, .5, .5, -.5, 0., 1.)
     }
 
+    #initOrbitControls(renderer) {
+        this.#controls = new OrbitControls(this.#offscreanCamera, renderer.domElement)
+        this.#controls.maxZoom = 10.
+        this.#controls.minZoom = 1.
+        this.#controls.enableRotate = false
+        this.#controls.enablePan = true
+        this.#controls.update()
+    }
+
     get texture() {
         return this.#renderTarget.texture
+    }
+
+    get mode() {
+        return this.#mode
     }
 
     get kernelsize() {
@@ -90,6 +108,11 @@ export default class ImageProcessing {
 
     get sigma() {
         return this.#sigma
+    }
+
+    set mode(value) {
+        this.#mode = value
+        this.#material.uniforms.mode.value = this.#mode
     }
 
     set kernelsize(value) {

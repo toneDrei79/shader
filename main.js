@@ -12,7 +12,8 @@ let video, videoTexture
 let stats
 let availables = {
     sanfrancisco: './videos/sanfrancisco.mp4',
-    moon: './videos/moon.mp4'
+    moon: './videos/moon.mp4',
+    travel: './videos/travel.mp4'
 }
 
 init()
@@ -37,20 +38,13 @@ async function init() {
     camera = new THREE.OrthographicCamera(-aspect/2, aspect/2, 1/2, -1/2, .01, 10)
     camera.position.z = .5
 
-    const controls = new OrbitControls(camera, renderer.domElement)
-    controls.maxZoom = 10.
-    controls.minZoom = 1.
-    controls.enableRotate = false
-    controls.enablePan = true
-    controls.update()
-
     stats = new Stats()
     container.appendChild(stats.dom)
 
     window.addEventListener('resize', onWindowResize, false)
 
 
-    imageprocessing = new ImageProcessing()
+    imageprocessing = new ImageProcessing(renderer)
     anaglyph = new Anaglyph()
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), anaglyph.material)
     scene.add(plane)
@@ -87,6 +81,7 @@ function animate() {
 
 function guiImageprocessing(gui) {
     const folder = gui.addFolder('Pre-process')
+    folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode')
     folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
     folder.add(imageprocessing, 'sigma', .1, 5.).step(.01).name('sigma')
     folder.close()
