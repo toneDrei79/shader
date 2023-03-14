@@ -44,10 +44,8 @@ async function init() {
     window.addEventListener('resize', onWindowResize, false)
 
 
-    imageprocessing = new ImageProcessing(renderer)
-    anaglyph = new Anaglyph()
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), anaglyph.material)
-    scene.add(plane)
+    imageprocessing = new ImageProcessing()
+    anaglyph = new Anaglyph(renderer)
 
 
     const select = {src: availables.sanfrancisco}
@@ -75,6 +73,7 @@ function animate() {
     stats.update()
 
     imageprocessing.process(renderer)
+    anaglyph.process(renderer)
 
     render()
 }
@@ -103,7 +102,9 @@ function videoOnLoadedData() {
 
         imageprocessing.setResolution(video.videoWidth, video.videoHeight)
         imageprocessing.setTexture(videoTexture)
+        anaglyph.setResolution(video.videoWidth, video.videoHeight)
         anaglyph.setTexture(imageprocessing.texture)
+        scene.background = anaglyph.texture
         video.play()
     }
 }

@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import ShaderLoader from './shaderloader.js'
 
 
@@ -16,8 +15,6 @@ export default class ImageProcessing {
     #offscreanCamera
     #renderTarget
 
-    #controls
-
     #shaderLoader
 
     static modes = {
@@ -26,14 +23,13 @@ export default class ImageProcessing {
         sepalatablegaussian: 2
     }
 
-    constructor(renderer) {
+    constructor() {
         this.#shaderLoader = new ShaderLoader()
         this.#mode = ImageProcessing.modes.gaussian
         this.#kernelsize = 3
         this.#sigma = 1.
         this.#initMaterial()
         this.#initOffscrean()
-        this.#initOrbitControls(renderer)
     }
 
     setTexture(texture) { // should be called in video.onLoadedVideo
@@ -83,15 +79,6 @@ export default class ImageProcessing {
     #initOffscrean() {
         this.#offscreanScene = new THREE.Scene()
         this.#offscreanCamera = new THREE.OrthographicCamera(-.5, .5, .5, -.5, 0., 1.)
-    }
-
-    #initOrbitControls(renderer) {
-        this.#controls = new OrbitControls(this.#offscreanCamera, renderer.domElement)
-        this.#controls.maxZoom = 10.
-        this.#controls.minZoom = 1.
-        this.#controls.enableRotate = false
-        this.#controls.enablePan = true
-        this.#controls.update()
     }
 
     get texture() {
