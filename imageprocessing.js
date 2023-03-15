@@ -16,18 +16,23 @@ export default class ImageProcessing {
     #renderTarget
 
     #shaderLoader
+    #shaders = []
 
     static modes = {
         gaussian: 0,
         laplacian: 1,
-        sepalatablegaussian: 2
+        sepalatablegaussian: 2,
+        median: 3,
+        gaussilaplacian: 4
     }
 
     constructor() {
-        this.#shaderLoader = new ShaderLoader()
-        this.#mode = ImageProcessing.modes.gaussian
+        this.#mode = ImageProcessing.modes.laplacian
         this.#kernelsize = 3
         this.#sigma = 1.
+
+        this.#shaderLoader = new ShaderLoader()
+        this.#initShaders()
         this.#initMaterial()
         this.#initOffscrean()
     }
@@ -66,12 +71,12 @@ export default class ImageProcessing {
             uniforms: {
                 image: {value: null}, // will be set after loading video via setTexture()
                 resolution: {value: null}, // will be set after loading video via setResolution()
-                mode: {value: this.#mode},
                 kernelsize: {value: this.#kernelsize},
-                sigma: {value: this.#sigma}
+                sigma: {value: this.#sigma},
+                mode: {value: this.#mode}
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
-            fragmentShader: this.#shaderLoader.load('./shaders/filter.frag.glsl'),
+            fragmentShader: this.#shaders[this.#mode],
             glslVersion: THREE.GLSL3
         })
     }
@@ -79,6 +84,14 @@ export default class ImageProcessing {
     #initOffscrean() {
         this.#offscreanScene = new THREE.Scene()
         this.#offscreanCamera = new THREE.OrthographicCamera(-.5, .5, .5, -.5, 0., 1.)
+    }
+
+    #initShaders() {
+        this.#shaders[0] = this.#shaderLoader.load('./shaders/filterings/gaussian.frag.glsl')
+        this.#shaders[1] = this.#shaderLoader.load('./shaders/filterings/laplacian.frag.glsl')
+        this.#shaders[2] = this.#shaderLoader.load('./shaders/filterings/separatablegaussian.frag.glsl')
+        this.#shaders[3] = this.#shaderLoader.load('./shaders/filterings/median.frag.glsl')
+        this.#shaders[4] = this.#shaderLoader.load('./shaders/filterings/gaussian_laplacian.frag.glsl')
     }
 
     get texture() {
@@ -99,7 +112,8 @@ export default class ImageProcessing {
 
     set mode(value) {
         this.#mode = value
-        this.#material.uniforms.mode.value = this.#mode
+        this.#material.fragmentShader = this.#shaders[this.#mode]
+        this.#material.needsUpdate = true
     }
 
     set kernelsize(value) {

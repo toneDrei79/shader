@@ -81,7 +81,7 @@ function animate() {
 function guiImageprocessing(gui) {
     const folder = gui.addFolder('Pre-process')
     folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode')
-    folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
+    folder.add(imageprocessing, 'kernelsize', 1, 9).step(1).name('kernel size')
     folder.add(imageprocessing, 'sigma', .1, 5.).step(.01).name('sigma')
     folder.close()
 }

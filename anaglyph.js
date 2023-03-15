@@ -17,6 +17,7 @@ export default class Anaglyph {
     #controls
 
     #shaderLoader
+    #shaders = []
 
     static modes = {
         right: 0,
@@ -28,8 +29,10 @@ export default class Anaglyph {
     }
 
     constructor(renderer) {
-        this.#shaderLoader = new ShaderLoader()
         this.#mode = Anaglyph.modes.right
+        
+        this.#shaderLoader = new ShaderLoader()
+        this.#initShaders()
         this.#initMaterial()
         this.#initOffscrean()
         this.#initOrbitControls(renderer)
@@ -66,12 +69,10 @@ export default class Anaglyph {
     #initMaterial() {
         this.#material = new THREE.ShaderMaterial({
             uniforms: {
-                image: {value: null},
-                mode: {value: this.#mode}
+                image: {value: null}
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
-            fragmentShader: this.#shaderLoader.load('./shaders/anaglyph.frag.glsl'),
-            // fragmentShader: this.#shaderLoader.load('./shaders/basic.frag.glsl'),
+            fragmentShader: this.#shaders[this.#mode],
             glslVersion: THREE.GLSL3
         })
     }
@@ -90,6 +91,15 @@ export default class Anaglyph {
         this.#controls.update()
     }
 
+    #initShaders() {
+        this.#shaders[0] = this.#shaderLoader.load('./shaders/right.frag.glsl')
+        this.#shaders[1] = this.#shaderLoader.load('./shaders/anaglyphs/true.frag.glsl')
+        this.#shaders[2] = this.#shaderLoader.load('./shaders/anaglyphs/gray.frag.glsl')
+        this.#shaders[3] = this.#shaderLoader.load('./shaders/anaglyphs/color.frag.glsl')
+        this.#shaders[4] = this.#shaderLoader.load('./shaders/anaglyphs/halfcolor.frag.glsl')
+        this.#shaders[5] = this.#shaderLoader.load('./shaders/anaglyphs/optimized.frag.glsl')
+    }
+
     get texture() {
         return this.#renderTarget.texture
     }
@@ -100,7 +110,8 @@ export default class Anaglyph {
 
     set mode(value) {
         this.#mode = value
-        this.#material.uniforms.mode.value = this.#mode   
+        this.#material.fragmentShader = this.#shaders[this.#mode]
+        this.#material.needsUpdate = true
     }
 
 }

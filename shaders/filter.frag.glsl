@@ -5,10 +5,6 @@ uniform int mode;
 uniform int kernelsize;
 uniform float sigma;
 
-uniform bool issecondstep;
-uniform bool aaa;
-uniform sampler2D processedimgae;
-
 in vec2 vUv;
 out vec4 fragColor;
 
@@ -40,9 +36,16 @@ void main(void) {
             }
         }
     }
-    else if (mode == 3) { // median
-
-    }
+    // else if (mode == 3) { // median
+    //     vec3 array[9*9];
+    //     int idx = 0;
+    //     for (int j=-kernelsize/2; j<kernelsize/2+kernelsize%2; j++) {
+    //         for (int i=-kernelsize/2; i<kernelsize/2+kernelsize%2; i++) {
+    //             array[idx++] = texture2D(image, uv + vec2(float(i)*cellSize.x, float(j)*cellSize.y)).rgb;
+    //         }
+    //     }
+    //     textureValue = vec4(median(array, idx), 1.); // idx on this moment represents the actual size of thie array
+    // }
     else if (mode == 4) { // gaussian + laplacian
 
     }
