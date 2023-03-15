@@ -86,10 +86,13 @@ function guiAnaglyph(gui) {
 
 function guiImageprocessing(gui) {
     const folder = gui.addFolder('Pre-process')
+    const prevMode =  imageprocessing.mode
     folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode').onChange(value => {
         folder.destroy()
         if (value == ImageProcessing.modes.median && imageprocessing.kernelsize > 5) imageprocessing.kernelsize = 5
         guiImageprocessing(gui)
+
+        if (prevMode == ImageProcessing.modes.separatedgaussian) imageprocessing.setTexture(videoTexture)
     })
     guiParams(folder, imageprocessing.mode)
     // folder.close()
