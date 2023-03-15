@@ -21,9 +21,9 @@ export default class ImageProcessing {
     static modes = {
         gaussian: 0,
         laplacian: 1,
-        sepalatablegaussian: 2,
+        separatedgaussian: 2,
         median: 3,
-        gaussian_laplacian: 4
+        log: 4
     }
 
     constructor() {
@@ -88,9 +88,9 @@ export default class ImageProcessing {
     #initShaders() {
         this.#shaders[0] = this.#shaderLoader.load('./shaders/filterings/gaussian.frag.glsl')
         this.#shaders[1] = this.#shaderLoader.load('./shaders/filterings/laplacian.frag.glsl')
-        this.#shaders[2] = this.#shaderLoader.load('./shaders/filterings/separatablegaussian.frag.glsl')
+        this.#shaders[2] = this.#shaderLoader.load('./shaders/filterings/separatedgaussian.frag.glsl')
         this.#shaders[3] = this.#shaderLoader.load('./shaders/filterings/median.frag.glsl')
-        this.#shaders[4] = this.#shaderLoader.load('./shaders/filterings/gaussian_laplacian.frag.glsl')
+        this.#shaders[4] = this.#shaderLoader.load('./shaders/filterings/log.frag.glsl')
     }
 
     get texture() {

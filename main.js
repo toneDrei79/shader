@@ -104,14 +104,14 @@ function guiParams(gui, mode) {
         break
     case ImageProcessing.modes.laplacian:
         break
-    case ImageProcessing.modes.sepalatablegaussian:
+    case ImageProcessing.modes.separatedgaussian:
         folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
         folder.add(imageprocessing, 'sigma', .01, 5.).step(.01).name('sigma')
         break
     case ImageProcessing.modes.median:
         folder.add(imageprocessing, 'kernelsize', 1, 5).step(1).name('kernel size')
         break
-    case ImageProcessing.modes.gaussian_laplacian:
+    case ImageProcessing.modes.log:
         folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
         folder.add(imageprocessing, 'sigma', .01, 5.).step(.01).name('sigma')
         break
