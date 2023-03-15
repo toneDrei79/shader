@@ -86,11 +86,11 @@ export default class ImageProcessing {
     }
 
     #initShaders() {
-        this.#shaders[0] = this.#shaderLoader.load('./shaders/filterings/gaussian.frag.glsl')
-        this.#shaders[1] = this.#shaderLoader.load('./shaders/filterings/laplacian.frag.glsl')
-        this.#shaders[2] = this.#shaderLoader.load('./shaders/filterings/separatedgaussian.frag.glsl')
-        this.#shaders[3] = this.#shaderLoader.load('./shaders/filterings/median.frag.glsl')
-        this.#shaders[4] = this.#shaderLoader.load('./shaders/filterings/log.frag.glsl')
+        this.#shaders[ImageProcessing.modes.gaussian] = this.#shaderLoader.load('./shaders/filterings/gaussian.frag.glsl')
+        this.#shaders[ImageProcessing.modes.laplacian] = this.#shaderLoader.load('./shaders/filterings/laplacian.frag.glsl')
+        this.#shaders[ImageProcessing.modes.separatedgaussian] = this.#shaderLoader.load('./shaders/filterings/separatedgaussian.frag.glsl')
+        this.#shaders[ImageProcessing.modes.median] = this.#shaderLoader.load('./shaders/filterings/median.frag.glsl')
+        this.#shaders[ImageProcessing.modes.log] = this.#shaderLoader.load('./shaders/filterings/log.frag.glsl')
     }
 
     get texture() {

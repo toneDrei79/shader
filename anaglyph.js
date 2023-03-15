@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
+import ImageProcessing from './imageprocessing.js'
 import ShaderLoader from './shaderloader.js'
 
 
@@ -92,12 +93,12 @@ export default class Anaglyph {
     }
 
     #initShaders() {
-        this.#shaders[0] = this.#shaderLoader.load('./shaders/right.frag.glsl')
-        this.#shaders[1] = this.#shaderLoader.load('./shaders/anaglyphs/true.frag.glsl')
-        this.#shaders[2] = this.#shaderLoader.load('./shaders/anaglyphs/gray.frag.glsl')
-        this.#shaders[3] = this.#shaderLoader.load('./shaders/anaglyphs/color.frag.glsl')
-        this.#shaders[4] = this.#shaderLoader.load('./shaders/anaglyphs/halfcolor.frag.glsl')
-        this.#shaders[5] = this.#shaderLoader.load('./shaders/anaglyphs/optimized.frag.glsl')
+        this.#shaders[Anaglyph.modes.right] = this.#shaderLoader.load('./shaders/right.frag.glsl')
+        this.#shaders[Anaglyph.modes.true] = this.#shaderLoader.load('./shaders/anaglyphs/true.frag.glsl')
+        this.#shaders[Anaglyph.modes.gray] = this.#shaderLoader.load('./shaders/anaglyphs/gray.frag.glsl')
+        this.#shaders[Anaglyph.modes.color] = this.#shaderLoader.load('./shaders/anaglyphs/color.frag.glsl')
+        this.#shaders[Anaglyph.modes.halfcolor] = this.#shaderLoader.load('./shaders/anaglyphs/halfcolor.frag.glsl')
+        this.#shaders[Anaglyph.modes.optimized] = this.#shaderLoader.load('./shaders/anaglyphs/optimized.frag.glsl')
     }
 
     get texture() {
