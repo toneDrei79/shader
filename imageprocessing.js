@@ -27,7 +27,7 @@ export default class ImageProcessing {
     }
 
     constructor() {
-        this.#mode = ImageProcessing.modes.gaussian
+        this.#mode = ImageProcessing.modes.gaussian_laplacian
         this.#kernelsize = 1
         this.#sigma = 1.
 

@@ -112,6 +112,9 @@ function guiParams(gui, mode) {
         folder.add(imageprocessing, 'kernelsize', 1, 5).step(1).name('kernel size')
         break
     case ImageProcessing.modes.gaussian_laplacian:
+        folder.add(imageprocessing, 'kernelsize', 1, 3).step(1).name('kernel size')
+        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        break
     default:
     }
     // folder.close()
