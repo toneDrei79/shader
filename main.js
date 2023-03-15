@@ -59,9 +59,9 @@ async function init() {
 
     let gui = new GUI({title: 'Settings'})
     gui.add(select, 'src', availables).name('video').onChange(value => {video.src = value})
-    guiImageprocessing(gui)
     guiAnaglyph(gui)
-    gui.close()
+    guiImageprocessing(gui)
+    // gui.close()
 }
 
 function render() {
@@ -78,18 +78,43 @@ function animate() {
     render()
 }
 
-function guiImageprocessing(gui) {
-    const folder = gui.addFolder('Pre-process')
-    folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode')
-    folder.add(imageprocessing, 'kernelsize', 1, 9).step(1).name('kernel size')
-    folder.add(imageprocessing, 'sigma', .1, 5.).step(.01).name('sigma')
-    folder.close()
-}
-
 function guiAnaglyph(gui) {
     const folder = gui.addFolder('Anaglyph')
     folder.add(anaglyph, 'mode', Anaglyph.modes).name('mode')
-    folder.close()
+    // folder.close()
+}
+
+function guiImageprocessing(gui) {
+    const folder = gui.addFolder('Pre-process')
+    folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode').onChange(value => {
+        folder.destroy()
+        if (value == ImageProcessing.modes.median && imageprocessing.kernelsize > 5) imageprocessing.kernelsize = 5
+        guiImageprocessing(gui)
+    })
+    guiParams(folder, imageprocessing.mode)
+    // folder.close()
+}
+
+function guiParams(gui, mode) {
+    const folder = gui.addFolder('Parameters')
+    switch (mode) {
+    case ImageProcessing.modes.gaussian:
+        folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
+        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        break
+    case ImageProcessing.modes.laplacian:
+        break
+    case ImageProcessing.modes.sepalatablegaussian:
+        folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
+        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        break
+    case ImageProcessing.modes.median:
+        folder.add(imageprocessing, 'kernelsize', 1, 5).step(1).name('kernel size')
+        break
+    case ImageProcessing.modes.gaussian_laplacian:
+    default:
+    }
+    // folder.close()
 }
 
 function videoOnLoadedData() {

@@ -23,12 +23,12 @@ export default class ImageProcessing {
         laplacian: 1,
         sepalatablegaussian: 2,
         median: 3,
-        gaussilaplacian: 4
+        gaussian_laplacian: 4
     }
 
     constructor() {
-        this.#mode = ImageProcessing.modes.laplacian
-        this.#kernelsize = 3
+        this.#mode = ImageProcessing.modes.gaussian
+        this.#kernelsize = 1
         this.#sigma = 1.
 
         this.#shaderLoader = new ShaderLoader()
