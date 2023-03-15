@@ -7,5 +7,6 @@ out vec4 fragColor;
 void main(void) {
     vec2 uv = vUv.xy;
 
-    fragColor = texture2D(image, vec2(uv.x/2.+.5, uv.y));
+    vec3 right = texture2D(image, vec2(uv.x/2.+.5, uv.y)).rgb;
+    fragColor = vec4(right, 1.);
 }

@@ -72,8 +72,7 @@ export default class ImageProcessing {
                 image: {value: null}, // will be set after loading video via setTexture()
                 resolution: {value: null}, // will be set after loading video via setResolution()
                 kernelsize: {value: this.#kernelsize},
-                sigma: {value: this.#sigma},
-                mode: {value: this.#mode}
+                sigma: {value: this.#sigma}
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
             fragmentShader: this.#shaders[this.#mode],
