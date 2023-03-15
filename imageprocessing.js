@@ -105,7 +105,7 @@ export default class ImageProcessing {
                 resolution: {value: null}, // will be set after loading video via setResolution()
                 kernelsize: {value: this.#kernelsize},
                 sigma: {value: this.#sigma},
-                isFirstProcess: {value: true}
+
             },
             vertexShader: this.#shaderLoader.load('./shaders/basic.vert.glsl'),
             fragmentShader: this.#shaders[this.#mode],
