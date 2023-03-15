@@ -100,20 +100,20 @@ function guiParams(gui, mode) {
     switch (mode) {
     case ImageProcessing.modes.gaussian:
         folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
-        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        folder.add(imageprocessing, 'sigma', .01, 5.).step(.01).name('sigma')
         break
     case ImageProcessing.modes.laplacian:
         break
     case ImageProcessing.modes.sepalatablegaussian:
         folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
-        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        folder.add(imageprocessing, 'sigma', .01, 5.).step(.01).name('sigma')
         break
     case ImageProcessing.modes.median:
         folder.add(imageprocessing, 'kernelsize', 1, 5).step(1).name('kernel size')
         break
     case ImageProcessing.modes.gaussian_laplacian:
-        folder.add(imageprocessing, 'kernelsize', 1, 3).step(1).name('kernel size')
-        folder.add(imageprocessing, 'sigma', .1, 10.).step(.01).name('sigma')
+        folder.add(imageprocessing, 'kernelsize', 1, 15).step(1).name('kernel size')
+        folder.add(imageprocessing, 'sigma', .01, 5.).step(.01).name('sigma')
         break
     default:
     }
