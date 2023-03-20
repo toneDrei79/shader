@@ -48,9 +48,24 @@ async function init() {
     anaglyph = new Anaglyph(renderer)
 
 
-    const select = {src: availables.sanfrancisco}
+    const configs = {
+        src: availables.sanfrancisco,
+        pausePlay: function() {
+            if (!video.paused) {
+                console.log("pause")
+                video.pause()
+            } else {
+                console.log("play")
+                video.play()
+            }
+        },
+        add10sec: function () {
+            video.currentTime = video.currentTime + 10
+            console.log(video.currentTime)
+        }
+    }
     video = document.createElement('video')
-    video.src = select.src
+    video.src = configs.src
     video.load()
     video.muted = true
     video.loop = true
@@ -58,7 +73,9 @@ async function init() {
 
 
     let gui = new GUI({title: 'Settings'})
-    gui.add(select, 'src', availables).name('video').onChange(value => {video.src = value})
+    gui.add(configs, 'src', availables).name('video').onChange(value => {video.src = value})
+    gui.add(configs, 'pausePlay').name('pause / play')
+    gui.add(configs, 'add10sec').name('add 10 seconds')
     guiAnaglyph(gui)
     guiImageprocessing(gui)
     // gui.close()
