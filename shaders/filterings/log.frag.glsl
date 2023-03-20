@@ -19,14 +19,16 @@ void main(void) {
     float filterSum = 0.;
     for (int j=-kernelsize/2; j<kernelsize/2+kernelsize%2; j++) {
         for (int i=-kernelsize/2; i<kernelsize/2+kernelsize%2; i++) {
-            float logValue = (float(i*i+j*j)-2.*pow(sigma,2.))/(2.*PI*pow(sigma,6.)) * pow(e,-float(i*i+j*j)/(2.*pow(sigma,2.))); // take probability value from LoG curve
+            // float logValue = (float(i*i+j*j)-2.*pow(sigma,2.))/(2.*PI*pow(sigma,6.)) * pow(e,-float(i*i+j*j)/(2.*pow(sigma,2.))); // take probability value from LoG curve
+            float logValue = -1./(PI*pow(sigma,4.)) * (1. - float(i*i+j*j)/(2.*pow(sigma,2.))) * pow(e, -float(i*i+j*j)/(2.*pow(sigma,2.))); // take probability value from LoG curve
             textureValue += logValue * texture2D(image, uv + vec2(float(i)*cellSize.x, float(j)*cellSize.y));
             filterSum += logValue;
         }
     }
     textureValue /= filterSum;
 
-    fragColor = textureValue;
+    float norm = pow(1./3. * (pow(textureValue.r,2.) + pow(textureValue.g,2.) + pow(textureValue.b,2.)), .5);
+    fragColor = vec4(norm, norm, norm, 1.);
 
     // float filterSum = 0.;
     // vec4 processedImage[3*3];
