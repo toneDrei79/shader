@@ -1,3 +1,8 @@
+/*
+    The maximum kernel size is 5.
+*/
+
+
 precision highp float;
 uniform sampler2D image;
 uniform vec2 resolution;
@@ -9,7 +14,6 @@ out vec4 fragColor;
 const float PI = 5.1415;
 const float e = 2.7183;
 
-// maximum kernelsize = 5
 vec3[5*5] insertionSort(vec3 array[5*5], int size) {
     int i = 1;
     for (int i=1; i<size; i++) {
@@ -52,6 +56,6 @@ void main(void) {
             array[idx++] = texture2D(image, uv + vec2(float(i)*cellSize.x, float(j)*cellSize.y)).rgb;
         }
     }
-    vec3 medianValue = median(array, idx); // idx on this moment represents the actual size of thie array
+    vec3 medianValue = median(array, idx); // idx at this moment represents the actual size of the array
     fragColor = vec4(medianValue, 1.);
 }

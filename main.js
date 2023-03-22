@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import GUI from 'three/addons/libs/lil-gui.module.min.js'
 import Stats from 'three/addons/libs/stats.module.js'
 import Anaglyph from './anaglyph.js'
@@ -44,8 +43,8 @@ async function init() {
     window.addEventListener('resize', onWindowResize, false)
 
 
-    imageprocessing = new ImageProcessing()
-    anaglyph = new Anaglyph(renderer)
+    imageprocessing = new ImageProcessing() // for filteriing
+    anaglyph = new Anaglyph(renderer) // for anaglyph
 
 
     const configs = {
@@ -105,6 +104,7 @@ function guiImageprocessing(gui) {
     const folder = gui.addFolder('Pre-process')
     const prevMode =  imageprocessing.mode
     folder.add(imageprocessing, 'mode', ImageProcessing.modes).step(1).name('mode').onChange(value => {
+        // renew gui for parameters of filtering
         folder.destroy()
         if (value == ImageProcessing.modes.median && imageprocessing.kernelsize > 5) imageprocessing.kernelsize = 5
         guiImageprocessing(gui)
@@ -148,6 +148,11 @@ function videoOnLoadedData() {
         videoTexture.generateMipmaps = false
         videoTexture.format = THREE.RGBAFormat
 
+        ```
+        The video texture will be filtered and render on offscrean.
+        The filtered video texture can be access in ImageProcessing.texture.
+        The filtered video texture will be applied anaglyph and render on background on main scene.
+        ```
         imageprocessing.setResolution(video.videoWidth, video.videoHeight)
         imageprocessing.setTexture(videoTexture)
         anaglyph.setResolution(video.videoWidth, video.videoHeight)

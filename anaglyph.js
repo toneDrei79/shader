@@ -43,7 +43,7 @@ export default class Anaglyph {
         this.#material.uniforms.image.value = texture
     }
 
-    setResolution(width, height) {
+    setResolution(width, height) { // should be called in video.onLoadedVideo
         this.#renderTarget = new THREE.WebGLRenderTarget(width, height, {
             type: THREE.FloatType,
             magFilter: THREE.NearestFilter,
@@ -60,6 +60,7 @@ export default class Anaglyph {
         this.#offscreanScene.add(this.#plane)
 
         if (this.#renderTarget) {
+            // offscrean rendering
             renderer.setRenderTarget(this.#renderTarget)
             renderer.clear()
             renderer.render(this.#offscreanScene, this.#offscreanCamera)

@@ -39,10 +39,10 @@ export default class ImageProcessing {
 
     setTexture(texture) { // should be called in video.onLoadedVideo
         this.#material.uniforms.image.value = texture
-        this.#_material.uniforms.image.value = texture
+        this.#_material.uniforms.image.value = texture // for separated gaussian filtering
     }
 
-    setResolution(width, height) {
+    setResolution(width, height) { // should be called in video.onLoadedVideo
         this.#renderTarget = new THREE.WebGLRenderTarget(width, height, {
             type: THREE.FloatType,
             magFilter: THREE.NearestFilter,
@@ -50,13 +50,14 @@ export default class ImageProcessing {
         })
         this.#material.uniforms.resolution.value = new THREE.Vector2(width, height)
 
+        // for separated gaussian filtering
         this.#_renderTarget = new THREE.WebGLRenderTarget()
         this.#_renderTarget.copy(this.#renderTarget)
         this.#_material.uniforms.resolution.value = new THREE.Vector2(width, height)
     }
 
     process(renderer) {
-        if (this.#mode == ImageProcessing.modes.separatedgaussian) {
+        if (this.#mode == ImageProcessing.modes.separatedgaussian) { // need to do offscrean rendering additionally
             const processedImage = this.#_process(renderer)
             this.#material.uniforms.image.value = processedImage
         }
@@ -68,6 +69,7 @@ export default class ImageProcessing {
         this.#offscreanScene.add(this.#plane)
 
         if (this.#renderTarget) {
+            // offscrean rendering
             renderer.setRenderTarget(this.#renderTarget)
             renderer.clear()
             renderer.render(this.#offscreanScene, this.#offscreanCamera)
@@ -80,7 +82,7 @@ export default class ImageProcessing {
     #_renderTarget
     #_material
     #_plane
-    #_process(renderer) {
+    #_process(renderer) { // extra offscrean rendering for separated gaussian filtering
         if (this.#_plane) {
             this.#_offscreanScene.remove(this.#_plane)
             this.#_plane.geometry.dispose()
@@ -88,6 +90,7 @@ export default class ImageProcessing {
         this.#_plane = new THREE.Mesh(new THREE.PlaneGeometry(1,1), this.#_material)
         this.#_offscreanScene.add(this.#_plane)
 
+        // offscrean rendering
         renderer.setRenderTarget(this.#_renderTarget)
         renderer.clear()
         renderer.render(this.#_offscreanScene, this.#_offscreanCamera)
