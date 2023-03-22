@@ -148,11 +148,11 @@ function videoOnLoadedData() {
         videoTexture.generateMipmaps = false
         videoTexture.format = THREE.RGBAFormat
 
-        ```
+        /*
         The video texture will be filtered and render on offscrean.
         The filtered video texture can be access in ImageProcessing.texture.
         The filtered video texture will be applied anaglyph and render on background on main scene.
-        ```
+        */
         imageprocessing.setResolution(video.videoWidth, video.videoHeight)
         imageprocessing.setTexture(videoTexture)
         anaglyph.setResolution(video.videoWidth, video.videoHeight)
